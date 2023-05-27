@@ -9,21 +9,29 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 counter = 0
 
-face_match = False
+recognized_person = "Unknown"
 
-reference_img = cv2.imread("domen/domen.jpg")
+reference_imgs = []
+reference_imgs.append(cv2.imread("domen/domen5.jpg"))  # Add reference image 1
+reference_imgs.append(cv2.imread("elon/elon.jpg"))  # Add reference image 2
 
+
+# Add more reference images if needed
 
 def check_face(frame):
-    global face_match
+    global recognized_person
     try:
-        if DeepFace.verify(frame, reference_img.copy())['verified']:
-            face_match = True
+        for i, reference_img in enumerate(reference_imgs):
+            if DeepFace.verify(frame, reference_img.copy())['verified']:
+                if i == 0:
+                    recognized_person = "Domen"
+                elif i == 1:
+                    recognized_person = "Elon"
+                break
         else:
-            face_match = False
-
+            recognized_person = "Unknown"
     except ValueError:
-        face_match = False
+        recognized_person = "Unknown"
 
 
 while True:
@@ -37,10 +45,12 @@ while True:
                 pass
         counter += 1
 
-        if face_match:
-            cv2.putText(frame, "MATCH!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
+        if recognized_person == "Unknown":
+            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        elif recognized_person == "Domen":
+            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         else:
-            cv2.putText(frame, "UNKNOWN!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         cv2.imshow("Camera", frame)
 
