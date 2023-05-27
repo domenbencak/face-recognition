@@ -1,35 +1,44 @@
 import threading
 import cv2
+import os
 from deepface import DeepFace
 
 cap = cv2.VideoCapture(0)
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 400)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 counter = 0
 
 recognized_person = "Unknown"
 
-reference_imgs = []
-reference_imgs.append(cv2.imread("domen/domen5.jpg"))  # Add reference image 1
-reference_imgs.append(cv2.imread("elon/elon.jpg"))  # Add reference image 2
+reference_imgs = {}
 
+# Specify the folder paths where the images are stored
+domen_folder_path = "domen"
+elon_folder_path = "elon"
 
-# Add more reference images if needed
+# Get all image files for Domen with extensions .jpg, .jpeg, and .png
+domen_image_files = [file for file in os.listdir(domen_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
+# Load the images for Domen and add them to the reference_imgs dictionary under the person's name
+reference_imgs["Domen"] = [cv2.imread(os.path.join(domen_folder_path, file)) for file in domen_image_files]
+
+# Get all image files for Elon with extensions .jpg, .jpeg, and .png
+elon_image_files = [file for file in os.listdir(elon_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
+# Load the images for Elon and add them to the reference_imgs dictionary under the person's name
+reference_imgs["Elon"] = [cv2.imread(os.path.join(elon_folder_path, file)) for file in elon_image_files]
+
+# Add more persons with their folder paths if needed
 
 def check_face(frame):
     global recognized_person
     try:
-        for i, reference_img in enumerate(reference_imgs):
-            if DeepFace.verify(frame, reference_img.copy())['verified']:
-                if i == 0:
-                    recognized_person = "Domen"
-                elif i == 1:
-                    recognized_person = "Elon"
-                break
-        else:
-            recognized_person = "Unknown"
+        for person, images in reference_imgs.items():
+            for reference_img in images:
+                if DeepFace.verify(frame, reference_img.copy())['verified']:
+                    recognized_person = person
+                    return
+        recognized_person = "Unknown"
     except ValueError:
         recognized_person = "Unknown"
 
@@ -47,10 +56,8 @@ while True:
 
         if recognized_person == "Unknown":
             cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        elif recognized_person == "Domen":
-            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         else:
-            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            cv2.putText(frame, recognized_person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         cv2.imshow("Camera", frame)
 
