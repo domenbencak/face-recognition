@@ -2,7 +2,6 @@ import threading
 import cv2
 import os
 from deepface import DeepFace
-import uuid
 
 cap = cv2.VideoCapture(0)
 
@@ -10,28 +9,23 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 counter = 0
-was_saved = False  # Flag to track if a picture was already saved in the current run
+was_saved = False
 
 recognized_person = "Unknown"
 
 reference_imgs = {}
 
-# Specify the folder paths where the images are stored
 domen_folder_path = "domen"
 elon_folder_path = "elon"
 
-# Get all image files for Domen with extensions .jpg, .jpeg, and .png
 domen_image_files = [file for file in os.listdir(domen_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
-# Load the images for Domen and add them to the reference_imgs dictionary under the person's name
 reference_imgs["Domen"] = [cv2.imread(os.path.join(domen_folder_path, file)) for file in domen_image_files]
 
-# Get all image files for Elon with extensions .jpg, .jpeg, and .png
 elon_image_files = [file for file in os.listdir(elon_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
-# Load the images for Elon and add them to the reference_imgs dictionary under the person's name
 reference_imgs["Elon"] = [cv2.imread(os.path.join(elon_folder_path, file)) for file in elon_image_files]
 
 
-# Add more persons with their folder paths if needed
+# TODO - dodaj Aljaza in Dejana
 
 def save_frame(frame, person):
     global was_saved
@@ -48,7 +42,8 @@ def save_frame(frame, person):
         was_saved = True
     else:
         pass
-        #print("Already saved")
+        # print("Already saved")
+
 
 def check_face(frame):
     global recognized_person

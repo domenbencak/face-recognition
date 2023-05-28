@@ -1,7 +1,6 @@
 import cv2
 import os
 from deepface import DeepFace
-import uuid
 
 def save_frame(frame, person):
     folder_path = os.path.join(person.lower(), ".")
@@ -41,18 +40,13 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 reference_imgs = {}
 
-# Specify the folder paths where the images are stored
 domen_folder_path = "domen"
 elon_folder_path = "elon"
 
-# Get all image files for Domen with extensions .jpg, .jpeg, and .png
 domen_image_files = [file for file in os.listdir(domen_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
-# Load the images for Domen and add them to the reference_imgs dictionary under the person's name
 reference_imgs["Domen"] = [cv2.imread(os.path.join(domen_folder_path, file)) for file in domen_image_files]
 
-# Get all image files for Elon with extensions .jpg, .jpeg, and .png
 elon_image_files = [file for file in os.listdir(elon_folder_path) if file.lower().endswith((".jpg", ".jpeg", ".png"))]
-# Load the images for Elon and add them to the reference_imgs dictionary under the person's name
 reference_imgs["Elon"] = [cv2.imread(os.path.join(elon_folder_path, file)) for file in elon_image_files]
 
 while True:
