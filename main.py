@@ -2,6 +2,7 @@ import threading
 import cv2
 import os
 from deepface import DeepFace
+import uuid
 
 cap = cv2.VideoCapture(0)
 
@@ -39,7 +40,8 @@ def save_frame(frame, person):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        filename = f"{person}_{counter}.jpg"
+        counter_name = len(os.listdir(folder_path)) + 1
+        filename = f"{person}_{counter_name}.jpg"
         file_path = os.path.join(folder_path, filename)
         cv2.imwrite(file_path, frame)
         print(f"Saved frame for {person} in {file_path}")
