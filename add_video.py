@@ -45,7 +45,7 @@ cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-directory = "images"  # Directory where images will be saved
+directory = "images2"  # Directory where images will be saved
 
 # Initialize reference images
 reference_imgs = {}
