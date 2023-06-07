@@ -4,6 +4,8 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
 input_file = 'dataset.h5'
+output_file = 'trained_dataset.h5'
+
 with h5py.File(input_file, 'r') as hf:
     images = hf['images'][:]
     labels = hf['labels'][:]
@@ -26,3 +28,6 @@ model.fit(train_images, train_labels, batch_size=32, epochs=10, validation_data=
 loss, accuracy = model.evaluate(test_images, test_labels)
 print('Test loss:', loss)
 print('Test accuracy:', accuracy)
+
+model.save(output_file)
+print('Trained dataset saved as', output_file)
