@@ -2,6 +2,7 @@ import os
 import numpy as np
 from PIL import Image
 from keras.utils import np_utils
+import h5py
 
 dataset_path = './dataset_dejan/'
 image_size = (224, 224)
@@ -29,7 +30,9 @@ labels = np.array(labels)
 num_classes = len(class_labels)
 labels = np_utils.to_categorical(labels, num_classes)
 
-for label, image in zip(labels, images):
-    print("Label:", label)
-    print("Image shape:", image.shape)
-    print("----")
+output_file = 'dataset.h5'
+with h5py.File(output_file, 'w') as hf:
+    hf.create_dataset('images', data=images)
+    hf.create_dataset('labels', data=labels)
+
+print('Dataset saved as', output_file)
