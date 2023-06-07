@@ -4,25 +4,26 @@ from PIL import Image
 from keras.utils import np_utils
 import h5py
 
-dataset_path = './dataset_dejan/'
+dataset_path = './datasets/'
 image_size = (224, 224)
-class_labels = ['class1', 'class2', 'class3']
+class_labels = ['dejan', 'domen']
 
 class_to_label = {class_label: idx for idx, class_label in enumerate(class_labels)}
 
 images = []
 labels = []
 
-for image_name in os.listdir(dataset_path):
-    image_path = os.path.join(dataset_path, image_name)
-    img = Image.open(image_path).convert('RGB')
-    img = img.resize(image_size)
-    img_array = np.array(img)
-    images.append(img_array)
+for class_label in class_labels:
+    class_path = os.path.join(dataset_path, f'dataset_{class_label}')
+    for image_name in os.listdir(class_path):
+        image_path = os.path.join(class_path, image_name)
+        img = Image.open(image_path).convert('RGB')
+        img = img.resize(image_size)
+        img_array = np.array(img)
+        images.append(img_array)
 
-    class_label = image_name.split('.')[0]  
-    label = class_to_label.get(class_label, -1)
-    labels.append(label)
+        label = class_to_label.get(class_label, -1)
+        labels.append(label)
 
 images = np.array(images)
 labels = np.array(labels)
